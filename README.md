@@ -230,9 +230,6 @@ View coverage in QuestaSim: **Tools → Coverage → Show Coverage Report**
 
 🔗 **GitHub**: [https://github.com/PRAYAG2000n/axi4lite-uvm](https://github.com/PRAYAG2000n/axi4lite-uvm)
 
-## License
-
-MIT License (or specify your preferred license)
 
 ## Author
 
