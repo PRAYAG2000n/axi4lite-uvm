@@ -1,0 +1,67 @@
+typedef enum bit {READ=0, WRITE=1} rw_e;
+
+class axi_item extends uvm_sequence_item;
+
+  rand rw_e         kind;
+  rand bit [31:0]   addr;
+  rand bit [31:0]   wdata;
+  rand bit [3:0]    wstrb;
+
+  bit [31:0]        rdata;
+  bit [1:0]         resp;
+
+  rand bit          force_misaligned;
+  rand bit          force_oor;
+
+  // Don’t allow both error modes at the same time
+  constraint c_flags { !(force_misaligned && force_oor); }
+
+  // WSTRB only meaningful for writes
+  constraint c_wstrb {
+    if (kind == WRITE) wstrb != 4'h0;
+    else              wstrb == 4'h0;
+  }
+
+  // Address generation:
+  // - Normal: in-range, aligned
+  // - Misaligned: addr[1:0] != 0
+  // - Out-of-range: make addr[31:6] nonzero (fails DUT's range check)
+  constraint c_addr {
+    if (!force_misaligned && !force_oor) {
+      addr[31:6] == 0;
+      addr[5:2] inside {[0:15]};
+      addr[1:0] == 2'b00;
+    }
+
+    if (force_misaligned) {
+      // keep it otherwise in-range, but misaligned
+      addr[31:6] == 0;
+      addr[5:2] inside {[0:15]};
+      addr[1:0] != 2'b00;
+    }
+
+    if (force_oor) {
+      // out-of-range: violate addr_in_range() by setting high bits
+      addr[31:6] != 0;
+    }
+  }
+
+  `uvm_object_utils_begin(axi_item)
+    `uvm_field_enum(rw_e, kind, UVM_ALL_ON)
+    `uvm_field_int(addr, UVM_ALL_ON)
+    `uvm_field_int(wdata, UVM_ALL_ON)
+    `uvm_field_int(wstrb, UVM_ALL_ON)
+    `uvm_field_int(rdata, UVM_ALL_ON)
+    `uvm_field_int(resp, UVM_ALL_ON)
+    `uvm_field_int(force_misaligned, UVM_ALL_ON)
+    `uvm_field_int(force_oor, UVM_ALL_ON)
+  `uvm_object_utils_end
+
+  function new(string name="axi_item");
+    super.new(name);
+    force_misaligned = 0;
+    force_oor        = 0;
+  endfunction
+
+endclass
+

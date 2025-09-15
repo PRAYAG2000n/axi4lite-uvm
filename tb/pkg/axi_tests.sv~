@@ -1,0 +1,85 @@
+class base_test extends uvm_test;
+  `uvm_component_utils(base_test)
+  axi_env env;
+
+  function new(string name="base_test", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+
+  function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    env = axi_env::type_id::create("env", this);
+  endfunction
+endclass
+
+
+class sanity_rw_test extends base_test;
+  `uvm_component_utils(sanity_rw_test)
+  function new(string name="sanity_rw_test", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+  task run_phase(uvm_phase phase);
+    sanity_rw_seq seq = sanity_rw_seq::type_id::create("seq");
+    phase.raise_objection(this);
+    seq.start(env.agt.sqr);
+    phase.drop_objection(this);
+  endtask
+endclass
+
+
+class random_rw_test extends base_test;
+  `uvm_component_utils(random_rw_test)
+  function new(string name="random_rw_test", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+  task run_phase(uvm_phase phase);
+    random_rw_seq seq = random_rw_seq::type_id::create("seq");
+    phase.raise_objection(this);
+    seq.start(env.agt.sqr);
+    phase.drop_objection(this);
+  endtask
+endclass
+
+
+class negative_addr_test extends base_test;
+  `uvm_component_utils(negative_addr_test)
+  function new(string name="negative_addr_test", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+  task run_phase(uvm_phase phase);
+    negative_addr_seq seq = negative_addr_seq::type_id::create("seq");
+    phase.raise_objection(this);
+    seq.start(env.agt.sqr);
+    phase.drop_objection(this);
+  endtask
+endclass
+
+
+class misaligned_addr_test extends base_test;
+  `uvm_component_utils(misaligned_addr_test)
+  function new(string name="misaligned_addr_test", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+  task run_phase(uvm_phase phase);
+    misaligned_addr_seq seq = misaligned_addr_seq::type_id::create("seq");
+    phase.raise_objection(this);
+    seq.start(env.agt.sqr);
+    phase.drop_objection(this);
+  endtask
+endclass
+
+
+// THIS is your 85-90%+ test
+class cover_sweep_test extends base_test;
+  `uvm_component_utils(cover_sweep_test)
+  function new(string name="cover_sweep_test", uvm_component parent=null);
+    super.new(name, parent);
+  endfunction
+  task run_phase(uvm_phase phase);
+    cover_sweep_seq seq = cover_sweep_seq::type_id::create("seq");
+    phase.raise_objection(this);
+    seq.start(env.agt.sqr);
+    phase.drop_objection(this);
+  endtask
+endclass
+

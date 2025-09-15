@@ -1,0 +1,107 @@
+// In tb/pkg/axi_sequences.sv  (included inside axi_pkg)
+class cover_sweep_seq extends uvm_sequence #(axi_item);
+  `uvm_object_utils(cover_sweep_seq)
+
+  function new(string name="cover_sweep_seq");
+    super.new(name);
+  endfunction
+
+  function bit [31:0] addr_from_idx(int idx);
+    return bit'(idx) << 2; // aligned: idx*4
+  endfunction
+
+  task do_write(bit [31:0] a, bit [3:0] s);
+    axi_item tr;
+    tr = axi_item::type_id::create("cov_wr");
+    start_item(tr);
+      tr.kind  = WRITE;
+      tr.addr  = a;
+      tr.wdata = $urandom;
+      tr.wstrb = s;
+      tr.force_misaligned = 0;
+      tr.force_oor        = 0;
+    finish_item(tr);
+  endtask
+
+  task do_read(bit [31:0] a);
+    axi_item tr;
+    tr = axi_item::type_id::create("cov_rd");
+    start_item(tr);
+      tr.kind  = READ;
+      tr.addr  = a;
+      tr.wstrb = 4'h0; // your axi_item requires 0 for reads
+      tr.force_misaligned = 0;
+      tr.force_oor        = 0;
+    finish_item(tr);
+  endtask
+
+  task do_bad_write_misaligned(int idx);
+    axi_item tr;
+    tr = axi_item::type_id::create("bad_wr_mis");
+    start_item(tr);
+      tr.kind  = WRITE;
+      tr.addr  = (addr_from_idx(idx) | 32'h1); // misaligned
+      tr.wdata = $urandom;
+      tr.wstrb = 4'hF;
+      tr.force_misaligned = 0; // we’re directly setting addr
+      tr.force_oor        = 0;
+    finish_item(tr);
+  endtask
+
+  task do_bad_read_oor();
+    axi_item tr;
+    tr = axi_item::type_id::create("bad_rd_oor");
+    start_item(tr);
+      tr.kind  = READ;
+      tr.addr  = 32'h0000_0040; // addr[31:6]!=0? Actually 0x40 has bit[6]=1 => out-of-range for your DUT check
+      tr.wstrb = 4'h0;
+      tr.force_misaligned = 0;
+      tr.force_oor        = 0;
+    finish_item(tr);
+  endtask
+
+  task body();
+    // EXACTLY match your bins in axi_coverage.wstrb_cp
+    bit [3:0] patterns[$];
+
+    // full
+    patterns.push_back(4'hF);
+
+    // onehot
+    patterns.push_back(4'h1);
+    patterns.push_back(4'h2);
+    patterns.push_back(4'h4);
+    patterns.push_back(4'h8);
+
+    // twoB (these 6 must match your bins)
+    patterns.push_back(4'h3);
+    patterns.push_back(4'h5);
+    patterns.push_back(4'h6);
+    patterns.push_back(4'h9);
+    patterns.push_back(4'hA);
+    patterns.push_back(4'hC);
+
+    // threeB (these 4 must match your bins)
+    patterns.push_back(4'h7);
+    patterns.push_back(4'hB);
+    patterns.push_back(4'hD);
+    patterns.push_back(4'hE);
+
+    // 1) Hit WRITE×ADDR×WSTRB cross: 16 regs × 15 patterns = 240 bins
+    for (int idx = 0; idx < 16; idx++) begin
+      foreach (patterns[p]) begin
+        do_write(addr_from_idx(idx), patterns[p]);
+      end
+    end
+
+    // 2) Hit READ×ADDR×RESP (valid/okay) bins
+    for (int idx = 0; idx < 16; idx++) begin
+      do_read(addr_from_idx(idx));
+    end
+
+    // 3) Hit BAD address bucket + SLVERR bins (READ and WRITE)
+    do_bad_write_misaligned(0);
+    do_bad_read_oor();
+  endtask
+endclass
+

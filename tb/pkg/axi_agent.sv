@@ -1,0 +1,36 @@
+class axi_agent extends uvm_component;
+  `uvm_component_utils(axi_agent)
+
+  axi_sequencer sqr;
+  axi_driver    drv;
+  axi_monitor   mon;
+
+  virtual axi_if vif;
+  uvm_analysis_port #(axi_item) ap;
+
+  function new(string name="axi_agent", uvm_component parent=null);
+    super.new(name, parent);
+    ap = new("ap", this);
+  endfunction
+
+  function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+
+    if (!uvm_config_db#(virtual axi_if)::get(this, "", "vif", vif))
+      `uvm_fatal("NOVIF", "Agent could not get vif")
+
+    sqr = axi_sequencer::type_id::create("sqr", this);
+    drv = axi_driver   ::type_id::create("drv", this);
+    mon = axi_monitor  ::type_id::create("mon", this);
+
+    uvm_config_db#(virtual axi_if)::set(this, "drv", "vif", vif);
+    uvm_config_db#(virtual axi_if)::set(this, "mon", "vif", vif);
+  endfunction
+
+  function void connect_phase(uvm_phase phase);
+    super.connect_phase(phase);
+    drv.seq_item_port.connect(sqr.seq_item_export);
+    mon.ap.connect(ap);
+  endfunction
+endclass
+

@@ -1,0 +1,84 @@
+class axi_scoreboard extends uvm_component;
+  `uvm_component_utils(axi_scoreboard)
+
+  uvm_analysis_imp #(axi_item, axi_scoreboard) imp;
+  bit [31:0] model [16];
+
+  int write_cnt, read_cnt, error_cnt;
+
+  function new(string name="axi_scoreboard", uvm_component parent=null);
+    super.new(name, parent);
+    imp = new("imp", this);
+  endfunction
+
+  function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    for (int i=0; i<16; i++) model[i] = '0;
+    write_cnt = 0; read_cnt = 0; error_cnt = 0;
+  endfunction
+
+  function bit bad_addr(bit [31:0] a);
+    return (a[1:0] != 0) || !((a[31:6] == 0) && (a[5:2] < 16));
+  endfunction
+
+  function void apply_wstrb(ref bit [31:0] cur, bit [31:0] wd, bit [3:0] st);
+    if (st[0]) cur[7:0]   = wd[7:0];
+    if (st[1]) cur[15:8]  = wd[15:8];
+    if (st[2]) cur[23:16] = wd[23:16];
+    if (st[3]) cur[31:24] = wd[31:24];
+  endfunction
+
+  function void write(axi_item tr);
+    if (tr.kind == WRITE) begin
+      write_cnt++;
+
+      if (!bad_addr(tr.addr)) begin
+        if (tr.resp !== 2'b00) begin
+          error_cnt++;
+          `uvm_error("SB", $sformatf("WRITE expected OKAY got %0b addr=0x%08x", tr.resp, tr.addr))
+        end else begin
+          int idx = tr.addr[5:2];
+          bit [31:0] cur = model[idx];
+          apply_wstrb(cur, tr.wdata, tr.wstrb);
+          model[idx] = cur;
+        end
+      end else begin
+        if (tr.resp !== 2'b10) begin
+          error_cnt++;
+          `uvm_error("SB", $sformatf("WRITE expected SLVERR got %0b addr=0x%08x", tr.resp, tr.addr))
+        end
+      end
+
+    end else begin
+      read_cnt++;
+
+      if (!bad_addr(tr.addr)) begin
+        int idx = tr.addr[5:2];
+        bit [31:0] exp = model[idx];
+
+        if (tr.resp !== 2'b00) begin
+          error_cnt++;
+          `uvm_error("SB", $sformatf("READ expected OKAY got %0b addr=0x%08x", tr.resp, tr.addr))
+        end else if (tr.rdata !== exp) begin
+          error_cnt++;
+          `uvm_error("SB", $sformatf("READ mismatch addr=0x%08x exp=0x%08x got=0x%08x", tr.addr, exp, tr.rdata))
+        end
+      end else begin
+        if (tr.resp !== 2'b10) begin
+          error_cnt++;
+          `uvm_error("SB", $sformatf("READ expected SLVERR got %0b addr=0x%08x", tr.resp, tr.addr))
+        end
+      end
+    end
+  endfunction
+
+  function void report_phase(uvm_phase phase);
+    string msg;
+    super.report_phase(phase);
+
+    msg = $sformatf("\n---------------- SCOREBOARD SUMMARY ----------------\nTotal WRITE transactions : %0d\nTotal READ  transactions : %0d\nTotal AXI transactions   : %0d\nTotal functional errors  : %0d\n--------------------------------------------------\n",
+                    write_cnt, read_cnt, (write_cnt+read_cnt), error_cnt);
+    `uvm_info("SB_SUMMARY", msg, UVM_NONE)
+  endfunction
+endclass
+

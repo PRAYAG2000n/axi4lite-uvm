@@ -1,0 +1,182 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/Users/praya/Desktop/axi4lite-uvm
+T_opt
+!s110 1769901143
+VdoOC5JK2jVmn2I^1^[;3_0
+04 6 4 work top_tb fast 0
+=1-047c16a63f08-697e8c56-31f-65ac
+o-quiet -auto_acc_if_foreign -work work +acc
+Z1 tCvgOpt 0
+n@_opt
+OL;O;10.7c;67
+vaxi4lite_slave
+Z2 DXx6 sv_std 3 std 0 22 d=_JfHTnXCN[H5FjiaJJc0
+Z3 !s110 1769901142
+!i10b 1
+!s100 jeJLhWVCn85@Da6eIg_E10
+IKHXP9^z[Li>zLhiJO@7gm2
+Z4 VDg1SIo80bB@j0V0VzS_@n1
+!s105 axi4lite_slave_sv_unit
+S1
+R0
+w1769885300
+8./rtl/axi4lite_slave.sv
+F./rtl/axi4lite_slave.sv
+L0 1
+Z5 OL;L;10.7c;67
+r1
+!s85 0
+31
+Z6 !s108 1769901142.000000
+!s107 ./rtl/axi4lite_slave.sv|
+!s90 -reportprogress|300|-sv|-mfcu|+acc|-cover|bcesft|./rtl/axi4lite_slave.sv|
+!i113 0
+Z7 !s102 -cover bcesft
+Z8 o-sv -mfcu +acc -cover bcesft -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R1
+Yaxi_if
+R2
+Z9 !s110 1769901141
+!i10b 1
+!s100 :8Om?=iNzoocgV;_b:UEF2
+I2Hg]gbHKAkW^_o_727VWD2
+R4
+!s105 axi_if_sv_unit
+S1
+R0
+w1769900261
+8./tb/axi_if.sv
+F./tb/axi_if.sv
+L0 1
+R5
+r1
+!s85 0
+31
+Z10 !s108 1769901141.000000
+!s107 ./tb/axi_if.sv|
+!s90 -reportprogress|300|-sv|-mfcu|+acc|-cover|bcesft|./tb/axi_if.sv|
+!i113 0
+R7
+R8
+R1
+Xaxi_pkg
+!s115 axi_if
+R2
+Z11 DXx6 mtiUvm 7 uvm_pkg 0 22 3zPkj@YUcM=M^m3zCLh<H1
+R9
+!i10b 1
+!s100 MggkR8Ji1`dhAS2im7kfZ3
+I>9:_lQiM5BAUK@E]=Z>Dn0
+V>9:_lQiM5BAUK@E]=Z>Dn0
+S1
+R0
+w1769901118
+8./tb/pkg/axi_pkg.sv
+F./tb/pkg/axi_pkg.sv
+Z12 FC:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/uvm_macros.svh
+Z13 FC:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_version_defines.svh
+Z14 FC:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_message_defines.svh
+Z15 FC:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_phase_defines.svh
+Z16 FC:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_object_defines.svh
+Z17 FC:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_printer_defines.svh
+Z18 FC:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_tlm_defines.svh
+Z19 FC:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/tlm1/uvm_tlm_imps.svh
+Z20 FC:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_sequence_defines.svh
+Z21 FC:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_callback_defines.svh
+Z22 FC:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_reg_defines.svh
+Z23 FC:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_deprecated_defines.svh
+F./tb/pkg/axi_item.sv
+F./tb/pkg/axi_sequencer.sv
+F./tb/pkg/axi_driver.sv
+F./tb/pkg/axi_monitor.sv
+F./tb/pkg/axi_agent.sv
+F./tb/pkg/axi_scoreboard.sv
+F./tb/pkg/axi_coverage.sv
+F./tb/pkg/axi_env.sv
+F./tb/pkg/axi_sequences.sv
+F./tb/pkg/axi_tests.sv
+L0 1
+R5
+r1
+!s85 0
+31
+R10
+!s107 ./tb/pkg/axi_tests.sv|./tb/pkg/axi_sequences.sv|./tb/pkg/axi_env.sv|./tb/pkg/axi_coverage.sv|./tb/pkg/axi_scoreboard.sv|./tb/pkg/axi_agent.sv|./tb/pkg/axi_monitor.sv|./tb/pkg/axi_driver.sv|./tb/pkg/axi_sequencer.sv|./tb/pkg/axi_item.sv|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_deprecated_defines.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_reg_defines.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_callback_defines.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_sequence_defines.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/tlm1/uvm_tlm_imps.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_tlm_defines.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_printer_defines.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_object_defines.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_phase_defines.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_message_defines.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_version_defines.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/uvm_macros.svh|./tb/pkg/axi_pkg.sv|
+!s90 -reportprogress|300|-sv|-mfcu|+acc|-cover|bcesft|+incdir+./tb/pkg|./tb/pkg/axi_pkg.sv|
+!i113 0
+R7
+R8
+!s92 -sv -mfcu +acc -cover bcesft +incdir+./tb/pkg -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R1
+vregfile
+R2
+R9
+!i10b 1
+!s100 7aX2BC;Tk_Q>JjWl:kWXI3
+IHcn9@WCUWjS3YM9z<G4RY2
+R4
+!s105 regfile_sv_unit
+S1
+R0
+w1769879214
+8./rtl/regfile.sv
+F./rtl/regfile.sv
+L0 1
+R5
+r1
+!s85 0
+31
+R10
+!s107 ./rtl/regfile.sv|
+!s90 -reportprogress|300|-sv|-mfcu|+acc|-cover|bcesft|./rtl/regfile.sv|
+!i113 0
+R7
+R8
+R1
+vtop_tb
+R2
+R11
+DXx4 work 7 axi_pkg 0 22 >9:_lQiM5BAUK@E]=Z>Dn0
+R3
+!i10b 1
+!s100 Hdob3g5V^LEG<glnHGbMz2
+IE<g:^94AoEjJBHPFXGa;i1
+R4
+!s105 top_tb_sv_unit
+S1
+R0
+w1769900275
+8./tb/top_tb.sv
+F./tb/top_tb.sv
+R12
+R13
+R14
+R15
+R16
+R17
+R18
+R19
+R20
+R21
+R22
+R23
+L0 1
+R5
+r1
+!s85 0
+31
+R6
+!s107 C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_deprecated_defines.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_reg_defines.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_callback_defines.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_sequence_defines.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/tlm1/uvm_tlm_imps.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_tlm_defines.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_printer_defines.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_object_defines.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_phase_defines.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_message_defines.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/macros/uvm_version_defines.svh|C:/questasim64_10.7c/uvm-1.1d/../verilog_src/uvm-1.1d/src/uvm_macros.svh|./tb/top_tb.sv|
+!s90 -reportprogress|300|-sv|-mfcu|+acc|-cover|bcesft|./tb/top_tb.sv|
+!i113 0
+R7
+R8
+R1

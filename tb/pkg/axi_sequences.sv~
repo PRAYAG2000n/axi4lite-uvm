@@ -1,0 +1,238 @@
+// tb/pkg/axi_sequences.sv
+`ifndef AXI_SEQUENCES_SV
+`define AXI_SEQUENCES_SV
+
+class sanity_rw_seq extends uvm_sequence #(axi_item);
+  `uvm_object_utils(sanity_rw_seq)
+
+  function new(string name="sanity_rw_seq");
+    super.new(name);
+  endfunction
+
+  task body();
+    axi_item tr;
+
+    // Simple: write then read same addr
+    for (int i=0; i<16; i++) begin
+      tr = axi_item::type_id::create("wr");
+      start_item(tr);
+      tr.kind = WRITE;
+      tr.addr = (i << 2);
+      tr.wdata = $urandom;
+      tr.wstrb = 4'hF;
+      tr.force_misaligned = 0;
+      tr.force_oor = 0;
+      finish_item(tr);
+
+      tr = axi_item::type_id::create("rd");
+      start_item(tr);
+      tr.kind = READ;
+      tr.addr = (i << 2);
+      tr.force_misaligned = 0;
+      tr.force_oor = 0;
+      finish_item(tr);
+    end
+  endtask
+endclass
+
+
+class random_rw_seq extends uvm_sequence #(axi_item);
+  `uvm_object_utils(random_rw_seq)
+
+  function new(string name="random_rw_seq");
+    super.new(name);
+  endfunction
+
+  task body();
+    axi_item tr;
+
+    repeat (50) begin
+      tr = axi_item::type_id::create("rand_tr");
+      start_item(tr);
+      assert(tr.randomize());
+      finish_item(tr);
+    end
+  endtask
+endclass
+
+
+class negative_addr_seq extends uvm_sequence #(axi_item);
+  `uvm_object_utils(negative_addr_seq)
+
+  function new(string name="negative_addr_seq");
+    super.new(name);
+  endfunction
+
+  task body();
+    axi_item tr;
+
+    // Out-of-range write/read (force_oor makes addr[31:6]!=0)
+    repeat (10) begin
+      tr = axi_item::type_id::create("oor_wr");
+      start_item(tr);
+      tr.kind = WRITE;
+      tr.force_oor = 1;
+      tr.force_misaligned = 0;
+      tr.wdata = $urandom;
+      tr.wstrb = 4'hF;
+      finish_item(tr);
+
+      tr = axi_item::type_id::create("oor_rd");
+      start_item(tr);
+      tr.kind = READ;
+      tr.force_oor = 1;
+      tr.force_misaligned = 0;
+      finish_item(tr);
+    end
+  endtask
+endclass
+
+
+class misaligned_addr_seq extends uvm_sequence #(axi_item);
+  `uvm_object_utils(misaligned_addr_seq)
+
+  function new(string name="misaligned_addr_seq");
+    super.new(name);
+  endfunction
+
+  task body();
+    axi_item tr;
+
+    // Misaligned write/read (addr[1:0]!=0 but in-range [5:2])
+    repeat (10) begin
+      tr = axi_item::type_id::create("mis_wr");
+      start_item(tr);
+      tr.kind = WRITE;
+      tr.force_misaligned = 1;
+      tr.force_oor = 0;
+      tr.wdata = $urandom;
+      tr.wstrb = 4'hF;
+      finish_item(tr);
+
+      tr = axi_item::type_id::create("mis_rd");
+      start_item(tr);
+      tr.kind = READ;
+      tr.force_misaligned = 1;
+      tr.force_oor = 0;
+      finish_item(tr);
+    end
+  endtask
+endclass
+
+
+// ------------------------------------------------------------
+// FULL COVERAGE SEQ: hits ALL bins deterministically
+// - All 16 regs
+// - All wstrb bins you defined: full + onehot + twoB + threeB
+// - Reads of all regs (to cover READ side)
+// - Bad addr coverage for READ and WRITE (to cover addr "bad" bin)
+// ------------------------------------------------------------
+class full_coverage_seq extends uvm_sequence #(axi_item);
+  `uvm_object_utils(full_coverage_seq)
+
+  function new(string name="full_coverage_seq");
+    super.new(name);
+  endfunction
+
+  function bit [31:0] addr_from_idx(int idx);
+    // idx 0..15 => addr 0x00..0x3C
+    return (bit [31:0]'(idx & 16'hF)) << 2;
+  endfunction
+
+  task body();
+    axi_item tr;
+    bit [3:0] patterns[$];
+
+    // EXACTLY one representative for each bin in your wstrb_cp
+    // full
+    patterns.push_back(4'hF);
+
+    // onehot
+    patterns.push_back(4'h1);
+    patterns.push_back(4'h2);
+    patterns.push_back(4'h4);
+    patterns.push_back(4'h8);
+
+    // twoB (your bins: {3,5,6,9,10,12})
+    patterns.push_back(4'h3);
+    patterns.push_back(4'h5);
+    patterns.push_back(4'h6);
+    patterns.push_back(4'h9);
+    patterns.push_back(4'hA);
+    patterns.push_back(4'hC);
+
+    // threeB (your bins: {7,11,13,14})
+    patterns.push_back(4'h7);
+    patterns.push_back(4'hB);
+    patterns.push_back(4'hD);
+    patterns.push_back(4'hE);
+
+    // 1) Sweep ALL regs with ALL patterns: 16 * 15 = 240 writes
+    for (int idx=0; idx<16; idx++) begin
+      foreach (patterns[p]) begin
+        tr = axi_item::type_id::create($sformatf("fc_wr_r%0d_p%0d", idx, p));
+        start_item(tr);
+        tr.kind  = WRITE;
+        tr.addr  = addr_from_idx(idx);
+        tr.wdata = $urandom;
+        tr.wstrb = patterns[p];
+        tr.force_misaligned = 0;
+        tr.force_oor = 0;
+        finish_item(tr);
+      end
+    end
+
+    // 2) Read ALL regs: 16 reads
+    for (int idx=0; idx<16; idx++) begin
+      tr = axi_item::type_id::create($sformatf("fc_rd_r%0d", idx));
+      start_item(tr);
+      tr.kind = READ;
+      tr.addr = addr_from_idx(idx);
+      tr.force_misaligned = 0;
+      tr.force_oor = 0;
+      finish_item(tr);
+    end
+
+    // 3) Hit BAD address bin for BOTH READ and WRITE
+    // Out-of-range
+    repeat (5) begin
+      tr = axi_item::type_id::create("fc_bad_wr_oor");
+      start_item(tr);
+      tr.kind = WRITE;
+      tr.force_oor = 1;
+      tr.force_misaligned = 0;
+      tr.wdata = $urandom;
+      tr.wstrb = 4'hF;
+      finish_item(tr);
+
+      tr = axi_item::type_id::create("fc_bad_rd_oor");
+      start_item(tr);
+      tr.kind = READ;
+      tr.force_oor = 1;
+      tr.force_misaligned = 0;
+      finish_item(tr);
+    end
+
+    // Misaligned
+    repeat (5) begin
+      tr = axi_item::type_id::create("fc_bad_wr_mis");
+      start_item(tr);
+      tr.kind = WRITE;
+      tr.force_misaligned = 1;
+      tr.force_oor = 0;
+      tr.wdata = $urandom;
+      tr.wstrb = 4'hF;
+      finish_item(tr);
+
+      tr = axi_item::type_id::create("fc_bad_rd_mis");
+      start_item(tr);
+      tr.kind = READ;
+      tr.force_misaligned = 1;
+      tr.force_oor = 0;
+      finish_item(tr);
+    end
+  endtask
+endclass
+
+`endif
+

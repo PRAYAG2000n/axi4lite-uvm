@@ -1,0 +1,28 @@
+package axi_pkg;
+  import uvm_pkg::*;
+  `include "uvm_macros.svh"
+
+  // Base transaction first
+  `include "axi_item.sv"
+
+  // Agent components
+  `include "axi_sequencer.sv"
+  `include "axi_driver.sv"
+  `include "axi_monitor.sv"
+  `include "axi_agent.sv"
+
+  // Checkers / collectors
+  `include "axi_scoreboard.sv"
+  `include "axi_coverage.sv"
+
+  // Env
+  `include "axi_env.sv"
+
+  // Sequences MUST come before tests
+  `include "axi_sequences.sv"
+
+  // Tests last
+  `include "axi_tests.sv"
+
+endpackage
+

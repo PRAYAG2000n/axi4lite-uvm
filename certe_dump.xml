@@ -1,0 +1,78 @@
+<certe_dump>
+  <instance type=" full_coverage_test "> 
+     uvm_test_top 
+  
+     <instance type=" axi_env "> 
+        env 
+  
+        <instance type=" axi_agent "> 
+           agt 
+  
+           <port if_type = "uvm_analysis_port" txn_type = "anonymous"> 
+              ap 
+              <connection>  uvm_test_top.env.cov.imp  </connection> 
+              <connection>  uvm_test_top.env.sb.imp  </connection> 
+           </port> 
+  
+           <instance type=" axi_driver "> 
+              drv 
+  
+              <port if_type = "uvm_analysis_port" txn_type = "anonymous"> 
+                 rsp_port 
+              </port> 
+  
+              <port if_type = "uvm_seq_item_pull_port" txn_type = "anonymous"> 
+                 seq_item_port 
+                 <connection>  uvm_test_top.env.agt.sqr.seq_item_export  </connection> 
+              </port> 
+           </instance> 
+  
+  
+           <instance type=" axi_monitor "> 
+              mon 
+  
+              <port if_type = "uvm_analysis_port" txn_type = "anonymous"> 
+                 ap 
+                 <connection>  uvm_test_top.env.agt.ap  </connection> 
+              </port> 
+           </instance> 
+  
+  
+           <instance type=" axi_sequencer "> 
+              sqr 
+  
+              <export if_type = "uvm_analysis_export" txn_type = "anonymous"> 
+                 rsp_export 
+                 <connection>  uvm_test_top.env.agt.sqr.sqr_rsp_analysis_fifo.analysis_export  </connection> 
+              </export> 
+  
+              <imp if_type = "uvm_seq_item_pull_imp" txn_type = "anonymous"> 
+                 seq_item_export 
+              </imp> 
+           </instance> 
+  
+        </instance> 
+  
+  
+        <instance type=" axi_coverage "> 
+           cov 
+  
+           <imp if_type = "uvm_analysis_imp" txn_type = "anonymous"> 
+              imp 
+           </imp> 
+        </instance> 
+  
+  
+        <instance type=" axi_scoreboard "> 
+           sb 
+  
+           <imp if_type = "uvm_analysis_imp" txn_type = "anonymous"> 
+              imp 
+           </imp> 
+        </instance> 
+  
+     </instance> 
+  
+  </instance> 
+  
+  </certe_dump>
