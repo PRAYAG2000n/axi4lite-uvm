@@ -146,7 +146,7 @@ coverage save -onexit fullcov.ucdb
 
 ### Waveform
 
-![AXI4-Lite Waveform](docs/waveform.png)
+![AXI4-Lite Waveform](docs/IMG_5457.png)
 
 *QuestaSim waveform showing AXI4-Lite write transactions with clock, reset, address, data, and handshake signals.*
 
