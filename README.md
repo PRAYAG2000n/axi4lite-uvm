@@ -224,7 +224,7 @@ The `resp` coverpoint is at 50% because `SLVERR` responses (from misaligned or o
 - Add more misaligned address tests (`addr[1:0] != 2'b00`)
 - Add more out-of-range address tests (`addr >= 0x40`)
 
-View coverage in QuestaSim: **Tools → Coverage → Show Coverage Report**
+View coverage in QuestaSim: **Tools => Coverage => Show Coverage Report**
 
 ## Repository
 
